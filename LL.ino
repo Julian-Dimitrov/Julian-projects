@@ -9,6 +9,7 @@ unsigned long current;
 
 bool set = true;
 long int i = 0;
+int cal_time = 10 * 1000;
 long int average_mic = 0;
 long int average_photo = 0;
 
@@ -29,7 +30,7 @@ void setup() {
 }
 
 void loop() {
-  
+
   // calibration
   while (set == true) {
     secs = millis();
@@ -37,7 +38,7 @@ void loop() {
     average_mic += analogRead(A3);
     average_photo += analogRead(A0);
 
-    if (secs % 500 == 0 and secs != 4500) {
+    if (secs % 500 == 0 and secs != cal_time - 500) {
       if (blinker == true) {
         digitalWrite(y_led, HIGH);
         blinker = false;
@@ -49,12 +50,12 @@ void loop() {
         delay(1);
       }
     }
-    while (4400 <= secs and secs < 5000) {
+    while (cal_time - 600 <= secs and secs < cal_time) {
       secs = millis();
       digitalWrite(y_led, HIGH);
     }
 
-    if (secs == 5000) {
+    if (secs == cal_time) {
       average_mic = average_mic / i;
       average_photo = average_photo / i;
 
@@ -68,7 +69,7 @@ void loop() {
       break;
     }
   }
-  
+
   // main code
 
   //  Serial.print(analogRead(A0));
@@ -99,11 +100,11 @@ void loop() {
           Serial.println("THUNDER");
           Serial.println(secs - current);
           Serial.print("The lightning is in a radius of ");
-          Serial.print(speed_of_sound * (secs - current)/1000);
+          Serial.print(speed_of_sound * (secs - current) / 1000);
           Serial.println("m");
           break;
         }
-        
+
         else if (peaks == 1) {
           first_peak = secs;
         }
